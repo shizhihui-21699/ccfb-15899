@@ -1,0 +1,337 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:DetentionVerify.Desktop.ViewModels"
+        x:Class="DetentionVerify.Desktop.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="律师会见身份核验 · 窗口工作台"
+        Width="1500" Height="940"
+        MinWidth="1180" MinHeight="780"
+        WindowStartupLocation="CenterScreen">
+
+  <Grid RowDefinitions="Auto,Auto,*">
+
+    <!-- ===== 顶栏 ===== -->
+    <Border Grid.Row="0" Background="{DynamicResource Ink}" Padding="20,10">
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Grid.Column="0" Spacing="1" VerticalAlignment="Center">
+          <TextBlock Text="律师会见身份核验" FontSize="19" FontWeight="SemiBold" Foreground="White" />
+          <TextBlock Text="看守所窗口工作台 · 每次查询自动留痕 · 结果可追溯" FontSize="12" Foreground="#FFB9C7D4" />
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="14" VerticalAlignment="Center">
+          <Button Content="管理" MinHeight="32" Padding="10,2" FontSize="12"
+                  Classes="ghost" Foreground="#FFB9C7D4" BorderBrush="#FF3E4F5E"
+                  Click="OnOpenAdmin" ToolTip.Tip="名册导入、公钥登记、审计校验（Ctrl+Shift+A）" />
+          <StackPanel Spacing="1">
+            <TextBlock Text="窗口" FontSize="11" Foreground="#FF8FA4B8" />
+            <TextBox Text="{Binding WindowName}" Width="110" MinHeight="32" FontSize="14"
+                     Background="#FF25333F" Foreground="White" BorderBrush="#FF3E4F5E" />
+          </StackPanel>
+          <StackPanel Spacing="1">
+            <TextBlock Text="值班民警（记录署名）" FontSize="11" Foreground="#FF8FA4B8" />
+            <TextBox Text="{Binding OfficerName}" Width="150" MinHeight="32" FontSize="14"
+                     Background="#FF25333F" Foreground="White" BorderBrush="#FF3E4F5E"
+                     Watermark="请输入姓名" />
+          </StackPanel>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <!-- 名册时效条：常驻可见，不允许在不知情下用过期数据下结论 -->
+    <Border Grid.Row="1" Classes="rosterBar"
+            Classes.warn="{Binding RosterIsWarning}"
+            Classes.degraded="{Binding RosterIsDegraded}">
+      <Grid ColumnDefinitions="Auto,*">
+        <TextBlock Grid.Column="0" Classes="rosterTitle" Text="{Binding RosterTitle}"
+                   Margin="0,0,16,0" VerticalAlignment="Center" />
+        <TextBlock Grid.Column="1" Text="{Binding RosterDetail}" FontSize="13"
+                   Foreground="{DynamicResource Muted}" VerticalAlignment="Center" TextWrapping="Wrap" />
+      </Grid>
+    </Border>
+
+    <!-- ===== 主体 ===== -->
+    <Grid Grid.Row="2" ColumnDefinitions="300,*,380">
+
+      <!-- 左：当日预约队列 -->
+      <Border Grid.Column="0" Background="{DynamicResource Surface}"
+              BorderBrush="{DynamicResource Line}" BorderThickness="0,0,1,0">
+        <Grid RowDefinitions="Auto,Auto,*">
+          <StackPanel Grid.Row="0" Margin="16,16,16,8" Spacing="3">
+            <TextBlock Text="今日预约" FontSize="18" FontWeight="SemiBold" />
+            <TextBlock Text="{Binding QueueSummary}" FontSize="12"
+                       Foreground="{DynamicResource Muted}" TextWrapping="Wrap" />
+          </StackPanel>
+          <TextBlock Grid.Row="1" Margin="16,0,16,8" Text="点击姓名即带入资料，无需手打证号"
+                     FontSize="11" Foreground="{DynamicResource Muted}"
+                     IsVisible="{Binding HasAppointments}" />
+          <ScrollViewer Grid.Row="2" Padding="10,0,10,12">
+            <ItemsControl ItemsSource="{Binding Queue}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:AppointmentRowViewModel">
+                  <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
+                          Background="Transparent" BorderThickness="0" Padding="6,8"
+                          Command="{Binding PickCommand}">
+                    <Grid ColumnDefinitions="34,*">
+                      <Border Grid.Column="0" Width="30" Height="30" CornerRadius="15"
+                              Background="{DynamicResource InfoTint}" VerticalAlignment="Top">
+                        <TextBlock Text="{Binding Initial}" FontSize="14" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource Info}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                      </Border>
+                      <StackPanel Grid.Column="1" Margin="8,0,0,0" Spacing="1">
+                        <Grid ColumnDefinitions="*,Auto">
+                          <TextBlock Grid.Column="0" Text="{Binding DisplayName}" FontSize="14"
+                                     FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                          <TextBlock Grid.Column="1" Text="{Binding SlotText}" FontSize="11"
+                                     Margin="6,0,0,0" Foreground="{DynamicResource Muted}" />
+                        </Grid>
+                        <TextBlock Text="{Binding Subtitle}" FontSize="12" TextWrapping="Wrap"
+                                   Foreground="{DynamicResource Muted}" />
+                      </StackPanel>
+                    </Grid>
+                  </Button>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </ScrollViewer>
+        </Grid>
+      </Border>
+
+      <!-- 中：录入与结论 -->
+      <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="18,14,14,24" Spacing="12">
+
+          <Border Classes="card" Padding="16">
+            <StackPanel Spacing="10">
+              <TextBlock Classes="section" Text="一、核验身份" />
+              <Grid ColumnDefinitions="*,Auto">
+                <TextBox Grid.Column="0" Classes="big" Name="CertBox"
+                         Text="{Binding CertNo}"
+                         Watermark="扫描或键入 17 位执业证号，按 Enter 核验"
+                         KeyDown="OnCertKeyDown" />
+                <Button Grid.Column="1" Classes="primary" Margin="10,0,0,0" Width="170"
+                        Command="{Binding VerifyCommand}">
+                  <TextBlock Text="核验  ⏎" />
+                </Button>
+              </Grid>
+
+              <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                <StackPanel Grid.Column="0" Spacing="4">
+                  <TextBlock Classes="section" Text="律师姓名" />
+                  <TextBox Text="{Binding LawyerNameInput}" Watermark="与证件一致" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Spacing="4">
+                  <TextBlock Classes="section" Text="律所名称" />
+                  <TextBox Text="{Binding FirmNameInput}" Watermark="可留空" />
+                </StackPanel>
+                <StackPanel Grid.Column="2" Spacing="4">
+                  <TextBlock Classes="section" Text="身份证号（可选）" />
+                  <TextBox Text="{Binding IdNumberInput}" Watermark="18 位，辅助核对" />
+                </StackPanel>
+              </Grid>
+
+              <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                <StackPanel Grid.Column="0" Spacing="4">
+                  <TextBlock Classes="section" Text="在押人员编号" />
+                  <TextBox Text="{Binding DetaineeNoInput}" Watermark="如 D-001" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Spacing="4">
+                  <TextBlock Classes="section" Text="委托手续" />
+                  <ComboBox ItemsSource="{Binding CommissionOptions}"
+                            SelectedItem="{Binding SelectedCommission}"
+                            HorizontalAlignment="Stretch">
+                    <ComboBox.ItemTemplate>
+                      <DataTemplate x:DataType="vm:CommissionOption">
+                        <TextBlock Text="{Binding Label}" />
+                      </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                  </ComboBox>
+                </StackPanel>
+                <StackPanel Grid.Column="2" Spacing="4">
+                  <TextBlock Classes="section" Text="手续编号" />
+                  <TextBox Text="{Binding CommissionNoInput}" Watermark="可留空" />
+                </StackPanel>
+              </Grid>
+
+              <StackPanel Spacing="5">
+                <TextBlock Classes="section" Text="二、人证对照（必做，结论决定能否放行）" />
+                <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="6">
+                  <RadioButton Grid.Column="0" GroupName="PhotoVerdict" Content="相符"
+                               IsChecked="{Binding VerdictMatch}" />
+                  <RadioButton Grid.Column="1" GroupName="PhotoVerdict" Content="存疑 · 需复核"
+                               IsChecked="{Binding VerdictDoubtful}" />
+                  <RadioButton Grid.Column="2" GroupName="PhotoVerdict" Content="不符 · 禁止"
+                               IsChecked="{Binding VerdictMismatch}" />
+                  <RadioButton Grid.Column="3" GroupName="PhotoVerdict" Content="尚未比对"
+                               IsChecked="{Binding VerdictNotPerformed}" />
+                </Grid>
+              </StackPanel>
+            </StackPanel>
+          </Border>
+
+          <!-- 结论区 -->
+          <Border Classes="card" Padding="16" IsVisible="{Binding HasDecision}">
+            <StackPanel Spacing="14">
+              <Grid ColumnDefinitions="*,Auto">
+                <Border Grid.Column="0" Classes="badge"
+                        Classes.ok="{Binding IsOutcomeVerified}"
+                        Classes.warn="{Binding IsOutcomeCaution}"
+                        Classes.review="{Binding IsOutcomeReview}"
+                        Classes.block="{Binding IsOutcomeBlocked}">
+                  <TextBlock Classes="badgeText" Text="{Binding OutcomeBadgeText}"
+                             VerticalAlignment="Center" />
+                </Border>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="6" Margin="14,0,0,0">
+                  <Button Classes="action" Width="215" Command="{Binding AuthorizeCommand}"
+                          IsVisible="{Binding CanAuthorize}" IsEnabled="{Binding !IsBusy}">
+                    <TextBlock Text="{Binding AuthorizeButtonText}" />
+                  </Button>
+                  <Button Classes="ghost" Width="215" Command="{Binding ClearCommand}">
+                    <TextBlock Text="清空，接诊下一位  (Esc)" />
+                  </Button>
+                  <TextBlock Text="禁止会见：请报告值班领导" FontSize="12" TextWrapping="Wrap"
+                             Width="215" Foreground="{DynamicResource Block}"
+                             IsVisible="{Binding IsOutcomeBlocked}" />
+                </StackPanel>
+              </Grid>
+
+              <Grid ColumnDefinitions="118,*" ColumnSpacing="14">
+                <Border Grid.Column="0" Width="118" Height="150" Background="{DynamicResource Canvas}"
+                        BorderBrush="{DynamicResource Line}" BorderThickness="1" CornerRadius="4">
+                  <Panel>
+                    <Image Source="{Binding Photo}" Stretch="UniformToFill" />
+                    <TextBlock Text="名册无照片&#x0a;请核对证件原件" TextAlignment="Center"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                               Foreground="{DynamicResource Muted}" FontSize="13"
+                               IsVisible="{Binding !HasPhoto}" />
+                  </Panel>
+                </Border>
+                <StackPanel Grid.Column="1" Spacing="5" VerticalAlignment="Top">
+                  <TextBlock Text="{Binding LawyerDisplayName}" FontSize="24" FontWeight="SemiBold" />
+                  <TextBlock Text="{Binding LawyerDisplayFirm}" FontSize="14"
+                             Foreground="{DynamicResource Muted}" />
+                  <TextBlock Text="{Binding LawyerDisplayCert}" FontSize="14"
+                             FontFamily="Consolas, Menlo, monospace" Foreground="{DynamicResource Muted}" />
+                  <Border Background="{DynamicResource InfoTint}" CornerRadius="4" Padding="10,6" Margin="0,6,0,0"
+                          IsVisible="{Binding HasDetainee}">
+                    <StackPanel Spacing="2">
+                      <TextBlock Classes="section" Text="被会见人" />
+                      <TextBlock Text="{Binding DetaineeDisplay}" FontSize="16" />
+                    </StackPanel>
+                  </Border>
+                  <Button Classes="ghost" HorizontalAlignment="Left" Padding="10,4" MinHeight="30"
+                          IsVisible="{Binding HasNearMissHint}"
+                          Command="{Binding UseNearMissCommand}">
+                    <TextBlock Text="{Binding LastNearMissHint}" FontSize="12" TextWrapping="Wrap" />
+                  </Button>
+                </StackPanel>
+              </Grid>
+
+              <StackPanel Spacing="6">
+                <TextBlock Classes="section" Text="三、判定依据（按严重程度排序）" />
+                <ScrollViewer MaxHeight="250" VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding Checks}">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:CheckItemViewModel">
+                      <Border Classes="checkRow"
+                              Classes.block="{Binding IsBlock}"
+                              Classes.review="{Binding IsReview}"
+                              Classes.warn="{Binding IsWarn}">
+                        <Grid ColumnDefinitions="24,*">
+                          <TextBlock Grid.Column="0" Classes="checkGlyph" Text="{Binding Glyph}" />
+                          <StackPanel Grid.Column="1" Spacing="2">
+                            <TextBlock Text="{Binding Title}" FontSize="15" FontWeight="SemiBold"
+                                       TextWrapping="Wrap" />
+                            <TextBlock Text="{Binding Detail}" FontSize="13" TextWrapping="Wrap"
+                                       Foreground="{DynamicResource Muted}" IsVisible="{Binding HasDetail}" />
+                          </StackPanel>
+                        </Grid>
+                      </Border>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                </ScrollViewer>
+              </StackPanel>
+
+              <!-- 授权所需补充信息 -->
+              <Border Background="{DynamicResource Canvas}" CornerRadius="4" Padding="12"
+                      IsVisible="{Binding NeedsAnySupplement}">
+                <StackPanel Spacing="8">
+                  <TextBlock Classes="section" Text="四、放行说明" />
+                  <StackPanel Spacing="4" IsVisible="{Binding RequiresCautionField}">
+                    <TextBlock Text="存在疑点，请写明放行理由（必填，入档备查）" FontSize="13" TextWrapping="Wrap" />
+                    <TextBox Text="{Binding CautionReason}"
+                             Watermark="如：证件照为十年前，已核对身份证原件" />
+                  </StackPanel>
+                  <StackPanel Spacing="4" IsVisible="{Binding RequiresReviewFields}">
+                    <TextBlock Text="本件须人工复核：复核民警与核实情况（必填，不能由录入人自审）"
+                               FontSize="13" TextWrapping="Wrap" />
+                    <TextBox Text="{Binding ReviewOfficer}" Watermark="复核民警姓名" />
+                    <TextBox Text="{Binding ReviewNote}" Watermark="核实了哪些材料、结论如何" />
+                  </StackPanel>
+                </StackPanel>
+              </Border>
+
+              <!-- 授权码 -->
+              <Border Background="{DynamicResource OkTint}" BorderBrush="{DynamicResource Ok}"
+                      BorderThickness="2" CornerRadius="6" Padding="16" IsVisible="{Binding HasAuthorizedCode}">
+                <StackPanel Spacing="4">
+                  <TextBlock Text="会见授权码（交监区核对，当日当次有效）" FontSize="13"
+                             Foreground="{DynamicResource Ok}" />
+                  <TextBlock Text="{Binding AuthorizedCode}" FontSize="32" FontWeight="Bold"
+                             FontFamily="Consolas, Menlo, monospace"
+                             Foreground="{DynamicResource Ok}" />
+                </StackPanel>
+              </Border>
+
+            </StackPanel>
+          </Border>
+
+          <Border Background="{DynamicResource InfoTint}" CornerRadius="4" Padding="12,8">
+            <TextBlock Text="{Binding StatusMessage}" FontSize="14" TextWrapping="Wrap"
+                       Foreground="{DynamicResource Info}" />
+          </Border>
+
+        </StackPanel>
+      </ScrollViewer>
+
+      <!-- 右：当日流水 -->
+      <Border Grid.Column="2" Background="{DynamicResource Surface}"
+              BorderBrush="{DynamicResource Line}" BorderThickness="1,0,0,0">
+        <Grid RowDefinitions="Auto,*">
+          <StackPanel Grid.Row="0" Margin="16,16,16,10" Spacing="3">
+            <TextBlock Text="今日会见流水" FontSize="18" FontWeight="SemiBold" />
+            <TextBlock Text="每次查询均留痕（含未授权的查询）" FontSize="12"
+                       Foreground="{DynamicResource Muted}" />
+          </StackPanel>
+          <ScrollViewer Grid.Row="1">
+            <ItemsControl ItemsSource="{Binding Recent}" Margin="16,0,16,16">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:SessionRowViewModel">
+                  <Border BorderBrush="{DynamicResource Line}" BorderThickness="0,0,0,1" Padding="0,9">
+                    <StackPanel Spacing="3">
+                      <Grid ColumnDefinitions="Auto,*,Auto">
+                        <TextBlock Grid.Column="0" Text="{Binding Time}" FontSize="13"
+                                   FontFamily="Consolas, Menlo, monospace"
+                                   Foreground="{DynamicResource Muted}" />
+                        <TextBlock Grid.Column="1" Text="{Binding Name}" FontSize="14" FontWeight="SemiBold"
+                                   Margin="10,0" TextTrimming="CharacterEllipsis" />
+                        <Border Grid.Column="2" CornerRadius="3" Padding="6,1"
+                                Background="{DynamicResource Canvas}">
+                          <TextBlock Text="{Binding StateText}" FontSize="11"
+                                     Foreground="{DynamicResource Muted}" />
+                        </Border>
+                      </Grid>
+                      <TextBlock Text="{Binding Summary}" FontSize="12"
+                                 Foreground="{DynamicResource Muted}" TextTrimming="CharacterEllipsis" />
+                    </StackPanel>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </ScrollViewer>
+        </Grid>
+      </Border>
+
+    </Grid>
+  </Grid>
+</Window>

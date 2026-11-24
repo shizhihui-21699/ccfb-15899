@@ -1,0 +1,39 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Styles.Resources>
+    <!-- 配色：窗口环境白天强光、夜间值班，正文一律高对比深色，色仅用于状态语义 -->
+    <Color x:Key="InkColor">#FF16202B</Color>
+    <Color x:Key="MutedColor">#FF5A6B7C</Color>
+    <Color x:Key="LineColor">#FFD3DBE3</Color>
+    <Color x:Key="SurfaceColor">#FFFFFFFF</Color>
+    <Color x:Key="CanvasColor">#FFF2F5F8</Color>
+
+    <Color x:Key="OkColor">#FF137A4B</Color>
+    <Color x:Key="OkTintColor">#FFE6F4EC</Color>
+    <Color x:Key="WarnColor">#FF8A5A00</Color>
+    <Color x:Key="WarnTintColor">#FFFDF2DC</Color>
+    <Color x:Key="ReviewColor">#FF9A4A00</Color>
+    <Color x:Key="ReviewTintColor">#FFFDECE0</Color>
+    <Color x:Key="BlockColor">#FFB02418</Color>
+    <Color x:Key="BlockTintColor">#FFFBEAE8</Color>
+    <Color x:Key="InfoColor">#FF2A5C8A</Color>
+    <Color x:Key="InfoTintColor">#FFEAF2FA</Color>
+
+    <SolidColorBrush x:Key="Ink" Color="{StaticResource InkColor}" />
+    <SolidColorBrush x:Key="Muted" Color="{StaticResource MutedColor}" />
+    <SolidColorBrush x:Key="Line" Color="{StaticResource LineColor}" />
+    <SolidColorBrush x:Key="Surface" Color="{StaticResource SurfaceColor}" />
+    <SolidColorBrush x:Key="Canvas" Color="{StaticResource CanvasColor}" />
+
+    <SolidColorBrush x:Key="Ok" Color="{StaticResource OkColor}" />
+    <SolidColorBrush x:Key="OkTint" Color="{StaticResource OkTintColor}" />
+    <SolidColorBrush x:Key="Warn" Color="{StaticResource WarnColor}" />
+    <SolidColorBrush x:Key="WarnTint" Color="{StaticResource WarnTintColor}" />
+    <SolidColorBrush x:Key="Review" Color="{StaticResource ReviewColor}" />
+    <SolidColorBrush x:Key="ReviewTint" Color="{StaticResource ReviewTintColor}" />
+    <SolidColorBrush x:Key="Block" Color="{StaticResource BlockColor}" />
+    <SolidColorBrush x:Key="BlockTint" Color="{StaticResource BlockTintColor}" />
+    <SolidColorBrush x:Key="Info" Color="{StaticResource InfoColor}" />
+    <SolidColorBrush x:Key="InfoTint" Color="{StaticResource InfoTintColor}" />
+  </Styles.Resources>
+</Styles>

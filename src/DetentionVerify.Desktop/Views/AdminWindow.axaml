@@ -1,0 +1,139 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:DetentionVerify.Desktop.ViewModels"
+        x:Class="DetentionVerify.Desktop.Views.AdminWindow"
+        x:DataType="vm:AdminViewModel"
+        Title="名册与审计管理"
+        Width="1080" Height="820"
+        MinWidth="900" MinHeight="640"
+        WindowStartupLocation="CenterOwner">
+
+  <Grid RowDefinitions="Auto,*">
+
+    <Border Grid.Row="0" Background="{DynamicResource Ink}" Padding="20,12">
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Grid.Column="0" Spacing="1">
+          <TextBlock Text="名册与审计管理" FontSize="19" FontWeight="SemiBold" Foreground="White" />
+          <TextBlock Text="导入签名名册、登记公钥、核对审计链、导出备查材料" FontSize="12" Foreground="#FFB9C7D4" />
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+          <TextBlock Text="操作人" FontSize="11" Foreground="#FF8FA4B8" VerticalAlignment="Center" />
+          <TextBox Text="{Binding AdminName}" Width="140" MinHeight="32" FontSize="14"
+                   Background="#FF25333F" Foreground="White" BorderBrush="#FF3E4F5E"
+                   Watermark="姓名（入审计）" />
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <ScrollViewer Grid.Row="1">
+      <StackPanel Margin="20" Spacing="14">
+
+        <Border Classes="card" Padding="16">
+          <Grid ColumnDefinitions="*,Auto">
+            <TextBlock Grid.Column="0" Text="{Binding RosterSummary}" FontSize="14" VerticalAlignment="Center"
+                       TextWrapping="Wrap" />
+            <Button Grid.Column="1" Classes="ghost" Content="刷新" Command="{Binding RefreshCommand}" />
+          </Grid>
+        </Border>
+
+        <!-- 导入 -->
+        <Border Classes="card" Padding="16">
+          <StackPanel Spacing="10">
+            <TextBlock Classes="section" Text="一、导入律师名册（需签名包）" />
+            <TextBlock Classes="muted" FontSize="13"
+                       Text="导入包必须带 manifest.json 与 manifest.sig，且签名公钥已登记在本机。任何校验失败都会保持原名册不变。" />
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBox Grid.Column="0" Text="{Binding PackageDirectory}"
+                       Watermark="选择或粘贴导入包目录路径" />
+              <Button Grid.Column="1" Classes="primary" Margin="10,0,0,0" Width="140"
+                      Command="{Binding ImportCommand}" IsEnabled="{Binding !IsBusy}">
+                <TextBlock Text="校验并导入" />
+              </Button>
+            </Grid>
+            <Border Background="{DynamicResource Canvas}" CornerRadius="4" Padding="12">
+              <TextBlock Text="{Binding ImportStatus}" FontSize="13" TextWrapping="Wrap" />
+            </Border>
+          </StackPanel>
+        </Border>
+
+        <!-- 公钥 -->
+        <Border Classes="card" Padding="16">
+          <StackPanel Spacing="10">
+            <TextBlock Classes="section" Text="二、签名公钥（信任根）" />
+            <TextBlock Classes="muted" FontSize="13"
+                       Text="只登记公钥。私钥应由省级律师管理平台保管，本机不应具备签发名册的能力。" />
+            <ItemsControl ItemsSource="{Binding Keys}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="x:String">
+                  <Border BorderBrush="{DynamicResource Line}" BorderThickness="0,0,0,1" Padding="0,7">
+                    <TextBlock Text="{Binding}" FontSize="13" FontFamily="Consolas, Menlo, monospace"
+                               TextWrapping="Wrap" />
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <TextBlock Text="{Binding KeyStatus}" FontSize="13" Foreground="{DynamicResource Muted}"
+                       TextWrapping="Wrap" />
+            <Grid ColumnDefinitions="180,*,Auto" ColumnSpacing="8">
+              <TextBox Grid.Column="0" Text="{Binding NewKeyId}" Watermark="密钥编号，如 prov-key-2027" />
+              <TextBox Grid.Column="1" Text="{Binding NewKeyPublicPem}"
+                       Watermark="粘贴公钥 PEM（-----BEGIN PUBLIC KEY-----）" />
+              <Button Grid.Column="2" Classes="ghost" Content="登记" Command="{Binding AddKeyCommand}" />
+            </Grid>
+            <Grid ColumnDefinitions="240,*,*" ColumnSpacing="8">
+              <TextBox Grid.Column="0" Text="{Binding NewKeyLabel}" Watermark="备注，如 省平台 2027 版" />
+              <TextBox Grid.Column="1" Text="{Binding NewKeyExpiry}" Watermark="有效期至（可选，如 2028-12-31）" />
+            </Grid>
+          </StackPanel>
+        </Border>
+
+        <!-- 审计 -->
+        <Border Classes="card" Padding="16">
+          <StackPanel Spacing="10">
+            <Grid ColumnDefinitions="*,Auto,Auto">
+              <TextBlock Grid.Column="0" Classes="section" Text="三、审计链" />
+              <Button Grid.Column="1" Classes="ghost" Content="重新校验" Margin="0,0,8,0"
+                      Command="{Binding RefreshAuditCommand}" />
+              <Button Grid.Column="2" Classes="ghost" Content="导出备查包" Command="{Binding ExportCommand}" />
+            </Grid>
+            <Border CornerRadius="4" Padding="10" Background="{DynamicResource Canvas}">
+              <TextBlock Text="{Binding AuditStatus}" FontSize="13" TextWrapping="Wrap"
+                         FontFamily="Consolas, Menlo, monospace" />
+            </Border>
+            <TextBlock Text="{Binding ExportStatus}" FontSize="12" Foreground="{DynamicResource Muted}"
+                       TextWrapping="Wrap" />
+            <Border BorderBrush="{DynamicResource Line}" BorderThickness="0,1,0,0" Padding="0,8,0,0">
+              <Grid ColumnDefinitions="60,110,90,110,*,150">
+                <TextBlock Grid.Column="0" Text="序号" FontSize="12" Foreground="{DynamicResource Muted}" />
+                <TextBlock Grid.Column="1" Text="时间" FontSize="12" Foreground="{DynamicResource Muted}" />
+                <TextBlock Grid.Column="2" Text="操作" FontSize="12" Foreground="{DynamicResource Muted}" />
+                <TextBlock Grid.Column="3" Text="操作人" FontSize="12" Foreground="{DynamicResource Muted}" />
+                <TextBlock Grid.Column="4" Text="对象" FontSize="12" Foreground="{DynamicResource Muted}" />
+                <TextBlock Grid.Column="5" Text="哈希" FontSize="12" Foreground="{DynamicResource Muted}" />
+              </Grid>
+            </Border>
+            <ItemsControl ItemsSource="{Binding AuditRows}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:AuditRowViewModel">
+                  <Grid ColumnDefinitions="60,110,90,110,*,150" Margin="0,4">
+                    <TextBlock Grid.Column="0" Text="{Binding Seq}" FontSize="12" />
+                    <TextBlock Grid.Column="1" Text="{Binding Time}" FontSize="12" />
+                    <TextBlock Grid.Column="2" Text="{Binding CategoryText}" FontSize="12" />
+                    <TextBlock Grid.Column="3" Text="{Binding Actor}" FontSize="12" />
+                    <TextBlock Grid.Column="4" Text="{Binding Subject}" FontSize="12"
+                               FontFamily="Consolas, Menlo, monospace"
+                               TextTrimming="CharacterEllipsis" />
+                    <TextBlock Grid.Column="5" Text="{Binding HashShort}" FontSize="11"
+                               FontFamily="Consolas, Menlo, monospace"
+                               Foreground="{DynamicResource Muted}" />
+                  </Grid>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </Border>
+
+      </StackPanel>
+    </ScrollViewer>
+  </Grid>
+</Window>

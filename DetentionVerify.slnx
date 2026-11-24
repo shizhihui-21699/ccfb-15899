@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/DetentionVerify.Core/DetentionVerify.Core.csproj" />
+    <Project Path="src/DetentionVerify.Desktop/DetentionVerify.Desktop.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/DetentionVerify.Tests/DetentionVerify.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tools/">
+    <Project Path="tools/RosterPack/RosterPack.csproj" />
+    <Project Path="tools/RenderShots/RenderShots.csproj" />
+  </Folder>
+</Solution>

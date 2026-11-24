@@ -1,0 +1,222 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <Style Selector="Window">
+    <Setter Property="Background" Value="{DynamicResource Canvas}" />
+    <Setter Property="FontFamily" Value="{DynamicResource AppFontFamily}" />
+    <Setter Property="FontSize" Value="15" />
+    <Setter Property="Foreground" Value="{DynamicResource Ink}" />
+  </Style>
+
+  <Style Selector="TextBlock.h1">
+    <Setter Property="FontSize" Value="22" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="Foreground" Value="{DynamicResource Ink}" />
+  </Style>
+
+  <Style Selector="TextBlock.section">
+    <Setter Property="FontSize" Value="13" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="Foreground" Value="{DynamicResource Muted}" />
+    <Setter Property="LetterSpacing" Value="1" />
+  </Style>
+
+  <Style Selector="TextBlock.muted">
+    <Setter Property="Foreground" Value="{DynamicResource Muted}" />
+    <Setter Property="TextWrapping" Value="Wrap" />
+  </Style>
+
+  <Style Selector="TextBlock.mono">
+    <Setter Property="FontFamily" Value="Consolas, Menlo, DejaVu Sans Mono, monospace" />
+  </Style>
+
+  <Style Selector="Border.card">
+    <Setter Property="Background" Value="{DynamicResource Surface}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Line}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="6" />
+  </Style>
+
+  <Style Selector="TextBox">
+    <Setter Property="MinHeight" Value="40" />
+    <Setter Property="FontSize" Value="17" />
+    <Setter Property="Padding" Value="10,6" />
+    <Setter Property="CornerRadius" Value="4" />
+  </Style>
+
+  <Style Selector="TextBox.big">
+    <Setter Property="MinHeight" Value="56" />
+    <Setter Property="FontSize" Value="26" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="FontFamily" Value="Consolas, Menlo, DejaVu Sans Mono, monospace" />
+    <Setter Property="Padding" Value="12,4" />
+  </Style>
+
+  <Style Selector="Button">
+    <Setter Property="MinHeight" Value="40" />
+    <Setter Property="FontSize" Value="15" />
+    <Setter Property="Padding" Value="16,6" />
+    <Setter Property="CornerRadius" Value="4" />
+  </Style>
+
+  <Style Selector="Button.primary">
+    <Setter Property="Background" Value="{DynamicResource Info}" />
+    <Setter Property="Foreground" Value="White" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="MinHeight" Value="56" />
+    <Setter Property="FontSize" Value="19" />
+  </Style>
+  <Style Selector="Button.primary:pointerover /template/ ContentPresenter">
+    <Setter Property="Background" Value="#FF1F4A73" />
+  </Style>
+
+  <Style Selector="Button.action">
+    <Setter Property="Background" Value="{DynamicResource Ok}" />
+    <Setter Property="Foreground" Value="White" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="MinHeight" Value="52" />
+    <Setter Property="FontSize" Value="18" />
+  </Style>
+
+  <Style Selector="Button.ghost">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Line}" />
+    <Setter Property="BorderThickness" Value="1" />
+  </Style>
+
+  <Style Selector="ComboBox">
+    <Setter Property="MinHeight" Value="40" />
+    <Setter Property="FontSize" Value="16" />
+  </Style>
+
+  <!-- 结论徽标：窗口外两米要能辨认 -->
+  <Style Selector="Border.badge">
+    <Setter Property="CornerRadius" Value="6" />
+    <Setter Property="Padding" Value="18,10" />
+  </Style>
+  <Style Selector="Border.badge.ok">
+    <Setter Property="Background" Value="{DynamicResource OkTint}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Ok}" />
+    <Setter Property="BorderThickness" Value="2" />
+  </Style>
+  <Style Selector="Border.badge.warn">
+    <Setter Property="Background" Value="{DynamicResource WarnTint}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Warn}" />
+    <Setter Property="BorderThickness" Value="2" />
+  </Style>
+  <Style Selector="Border.badge.review">
+    <Setter Property="Background" Value="{DynamicResource ReviewTint}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Review}" />
+    <Setter Property="BorderThickness" Value="2" />
+  </Style>
+  <Style Selector="Border.badge.block">
+    <Setter Property="Background" Value="{DynamicResource BlockTint}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Block}" />
+    <Setter Property="BorderThickness" Value="2" />
+  </Style>
+  <Style Selector="Border.badge.idle">
+    <Setter Property="Background" Value="{DynamicResource Canvas}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Line}" />
+    <Setter Property="BorderThickness" Value="2" />
+  </Style>
+
+  <Style Selector="TextBlock.badgeText">
+    <Setter Property="FontSize" Value="30" />
+    <Setter Property="FontWeight" Value="Bold" />
+  </Style>
+  <Style Selector="Border.badge.ok TextBlock.badgeText">
+    <Setter Property="Foreground" Value="{DynamicResource Ok}" />
+  </Style>
+  <Style Selector="Border.badge.warn TextBlock.badgeText">
+    <Setter Property="Foreground" Value="{DynamicResource Warn}" />
+  </Style>
+  <Style Selector="Border.badge.review TextBlock.badgeText">
+    <Setter Property="Foreground" Value="{DynamicResource Review}" />
+  </Style>
+  <Style Selector="Border.badge.block TextBlock.badgeText">
+    <Setter Property="Foreground" Value="{DynamicResource Block}" />
+  </Style>
+  <Style Selector="Border.badge.idle TextBlock.badgeText">
+    <Setter Property="Foreground" Value="{DynamicResource Muted}" />
+  </Style>
+
+  <!-- 单条检查项 -->
+  <Style Selector="Border.checkRow">
+    <Setter Property="BorderBrush" Value="{DynamicResource Line}" />
+    <Setter Property="BorderThickness" Value="0,0,0,1" />
+    <Setter Property="Padding" Value="0,9" />
+  </Style>
+  <Style Selector="Border.checkRow.block">
+    <Setter Property="Background" Value="{DynamicResource BlockTint}" />
+    <Setter Property="Padding" Value="10,9" />
+  </Style>
+  <Style Selector="Border.checkRow.review">
+    <Setter Property="Background" Value="{DynamicResource ReviewTint}" />
+    <Setter Property="Padding" Value="10,9" />
+  </Style>
+  <Style Selector="Border.checkRow.warn">
+    <Setter Property="Background" Value="{DynamicResource WarnTint}" />
+    <Setter Property="Padding" Value="10,9" />
+  </Style>
+
+  <Style Selector="TextBlock.checkGlyph">
+    <Setter Property="FontSize" Value="16" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="Width" Value="22" />
+  </Style>
+  <Style Selector="Border.checkRow.block TextBlock.checkGlyph">
+    <Setter Property="Foreground" Value="{DynamicResource Block}" />
+  </Style>
+  <Style Selector="Border.checkRow.review TextBlock.checkGlyph">
+    <Setter Property="Foreground" Value="{DynamicResource Review}" />
+  </Style>
+  <Style Selector="Border.checkRow.warn TextBlock.checkGlyph">
+    <Setter Property="Foreground" Value="{DynamicResource Warn}" />
+  </Style>
+  <Style Selector="Border.checkRow.info TextBlock.checkGlyph">
+    <Setter Property="Foreground" Value="{DynamicResource Ok}" />
+  </Style>
+
+  <!-- 名册状态条 -->
+  <Style Selector="Border.rosterBar">
+    <Setter Property="Background" Value="{DynamicResource OkTint}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Ok}" />
+    <Setter Property="BorderThickness" Value="0,0,0,3" />
+    <Setter Property="Padding" Value="16,8" />
+  </Style>
+  <Style Selector="Border.rosterBar.warn">
+    <Setter Property="Background" Value="{DynamicResource WarnTint}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Warn}" />
+  </Style>
+  <Style Selector="Border.rosterBar.degraded">
+    <Setter Property="Background" Value="{DynamicResource BlockTint}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Block}" />
+  </Style>
+
+  <Style Selector="TextBlock.rosterTitle">
+    <Setter Property="FontSize" Value="15" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="Foreground" Value="{DynamicResource Ok}" />
+  </Style>
+  <Style Selector="Border.rosterBar.warn TextBlock.rosterTitle">
+    <Setter Property="Foreground" Value="{DynamicResource Warn}" />
+  </Style>
+  <Style Selector="Border.rosterBar.degraded TextBlock.rosterTitle">
+    <Setter Property="Foreground" Value="{DynamicResource Block}" />
+  </Style>
+
+  <!-- 右侧列表面板 -->
+  <Style Selector="Border.panel">
+    <Setter Property="Background" Value="{DynamicResource Surface}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Line}" />
+    <Setter Property="BorderThickness" Value="1,0,0,0" />
+  </Style>
+
+  <Style Selector="TextBlock.codeBig">
+    <Setter Property="FontSize" Value="30" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="FontFamily" Value="Consolas, Menlo, DejaVu Sans Mono, monospace" />
+    <Setter Property="LetterSpacing" Value="2" />
+    <Setter Property="Foreground" Value="{DynamicResource Ok}" />
+  </Style>
+</Styles>

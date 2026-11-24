@@ -16,3 +16,23 @@ node_modules/
 __pycache__/
 .venv/
 venv/
+
+# .NET 构建产物
+bin/
+obj/
+*.user
+*.suo
+publish/
+TestResults/
+*.trx
+
+# 数据库与运行数据（含窗口密钥，绝不入库）
+*.db
+*.db-wal
+*.db-shm
+settings.json
+exports/
+
+# 密钥文件
+*.pem
+*.pub.pem
